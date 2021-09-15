@@ -38,8 +38,9 @@ public class Class5 {
 					System.out.print(t + " ");
 				}
 			} else {
-				System.out.println("不存在");
+				System.out.print("不存在");
 			}
+			System.out.println();
 			flag  = 0;
 			
 		}
