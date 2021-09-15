@@ -23,6 +23,7 @@ public class Class5 {
 						k++;
 					}
 				}
+				System.out.println();
 				i++;
 			}
 		}
