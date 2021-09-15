@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 public class Class5 {
 	public static void main(String[] args) {
-		int arr[] = {1, 2,3,5,5,5,6,7,8,9}, N = 10;
-		Scanner in = new Scanner(System.in);
-		int a, flag = 0;
+	    int arr[] = {1, 2,3,5,5,5,6,7,8,9}, N = 10;
+	    Scanner in = new Scanner(System.in);
+        int a, flag = 0;
 		System.out.println("顺序数组：");
 		for(int t : arr) {
 			System.out.print(t + " ");
