@@ -1,48 +1,36 @@
 package com.kgc.day8;
 
-import java.util.*;
-
-import com.kgc.day8.dao.OrderDao;
-
 public class Main {
 	public static void main(String[] args) {
 		initView();
 		
 		int funcNumber = 0;
-		OrderDao dao = new OrderDao();
-		dao.init(); // 初始化数据库
-		Scanner in = new Scanner(System.in);
+		OrderModel model = new OrderModel();
+		model.init(); // 初始化数据库
 	
 		do {
 			// 输入字符处理
-			while(true) {
-				try {
-					System.out.print("请选择：");
-					funcNumber = in.nextInt();
-					break;
-				} catch(Exception e) {
-					tips();
-					in = new Scanner(System.in);
-				}
-			}
+			funcNumber = Utils.correctInput(funcNumber, "请选择：");
 			
 			switch(funcNumber) {
+			case 0:
+				initView();
+				break;
 			case 1:
-				dao.orderMeal(); // 订餐
+				model.orderMeal(); // 订餐
 				break;
 			case 2:
-				dao.viewBag();		// 查看餐袋
+				model.viewBag();		// 查看餐袋
 				break;
 			case 3:
-				dao.signOrder();	// 签收订单
+				model.signOrder();	// 签收订单
 				break;
 			case 4:
-				// TODO
-				dao.deleteOrder(); // 删除订单
+				model.deleteOrder(); // 删除订单
 				break;
 			case 5:
 				// TODO
-				dao.thunbsUp();	// 点赞
+				model.thunbsUp();	// 点赞
 				break;
 			case 6:
 				signOut();	// 退出
@@ -61,6 +49,9 @@ public class Main {
 		System.out.println("请输入1-6的整数！");
 	}
 
+	/**
+	 * 初始化界面
+	 */
 	private static void initView() {
 		System.out.println("欢迎使用“吃货联盟订餐管理系统");
 		System.out.println("*********************");
@@ -80,5 +71,7 @@ public class Main {
 		System.out.println("谢谢使用，再见！");
 		System.exit(0);
 	}
+	
+	
 
 }
