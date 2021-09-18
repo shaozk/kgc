@@ -10,6 +10,7 @@ import com.kgc.day8.dao.OrderDao;
 public class OrderModel {
 	
 	int count = 0;	// 计数器（记录订单序号）
+	static int EOF  = -12138;
 	OrderDao orderDao =  new OrderDao();
 	DishDao dishDao = new DishDao();
 	List<Order> listOrder = new ArrayList<Order>();
@@ -25,7 +26,7 @@ public class OrderModel {
 	}
 
 	/**
-	 * 订餐
+	 * 功能1：我要订餐
 	 * 1.输入订单信息
 	 * 2.存储订单
 	 * 3.过滤错误输入
@@ -51,19 +52,26 @@ public class OrderModel {
 		System.out.println("**菜单**");
 		viewDish();
 		
-		while((id = Utils.correctInput(id, "请输入菜品序号：")) != -1) {
+		while((id = Utils.correctInput(id, "请输入菜品序号：")) != EOF) {
 			if(id < 1 || id > 3) {
 				System.out.print("序号范围1-3");
 			} else {
 				break;
 			}
 		}
-		number = Utils.correctInput(number, "请输入你所需要购买的份数：");
+		while((number = Utils.correctInput(number, "请输入你所需要购买的份数：")) != EOF) {
+			if(number < 1 || number > 100) {
+				System.out.println("订餐数量范围1-100");
+			} else {
+				break;
+			}
+		}
+		
 		dish = dishDao.findDishById(id, listDish);
 		dish.setNumber(number);
 		
 		// 送餐时间
-		while((time = Utils.correctInput(time, "请输入送餐时间：")) != -1) {
+		while((time = Utils.correctInput(time, "请输入送餐时间：")) != EOF) {
 			if(time < 10 || time > 20) {
 				System.out.print("时间范围10-20！");
 			} else {
@@ -80,7 +88,7 @@ public class OrderModel {
 		System.out.println("总金额：" + Utils.sumPrice(number, dish.getPrice()));
 		
 		// 确认订单
-		while((confirm = Utils.correctInput(confirm, "是否确定提交订单？(1/0)")) != -1) {
+		while((confirm = Utils.correctInput(confirm, "是否确定提交订单？(1/0)")) != EOF) {
 			if(confirm == 1) {
 				// 保存订单
 				order.setId(++count);
@@ -105,82 +113,23 @@ public class OrderModel {
 			}
 		}
 	}
-
+	
 	/**
-	 * 显示订单
-	 * 1.整齐排列算法
-	 */
-	private void viewOrder(Order order) {
-		
-		double price = order.getDish().getPrice();
-		int number = order.getDish().getNumber();
-		double sumPrice = Utils.sumPrice(number, price);
-		
-		System.out.println("---订单信息---\t");
-		System.out.println("订单号\t" + order.getId());
-		System.out.println("姓名\t" + order.getName());
-		System.out.println("菜品\t" + order.getDish().getName());
-		System.out.println("单价\t" + order.getDish().getPrice() + "元");
-		System.out.println("份数\tx" + order.getDish().getNumber());
-		System.out.println("总金额\t" + sumPrice);
-		System.out.println("送餐时间\t" + order.getTime());
-		System.out.println("送餐地址\t" + order.getAddress());
-		System.out.println("------------");
-	}
-
-	/**
-	 * 显示菜单
-	 * 1.遍历菜单列表
-	 */
-	private void viewDish() {
-		System.out.println("序号\t名称\t单价\t点赞数");
-		for(Dish dish : listDish) {
-			System.out.println(dish.getId() + "\t" + dish.getName() + "\t" 
-					+ dish.getPrice() + "\t" + dish.getThumbs());
-		}
-		
-	}
-
-	/**
-	 * 显示餐袋
+	 * 功能2：显示餐袋
 	 * 1.格式化输出
 	 * 2.遍历订单列表(listOrder)
 	 */
 	public void viewBag() {
-		System.out.println("***插看餐袋***");
+		System.out.println("***查看餐袋***");
 		System.out.println("序号\t订餐人\t餐品信息\t\t送餐日期\t送餐地址\t\t总金额\t订单状态");
 		for(Order order : listOrder) {
 			soutOrder(order);
 		}
 	}
 
-	/**
-	 * 格式化输出订单信息
-	 * 1.整齐排列算法
-	 * @param order
-	 */
-	private void soutOrder(Order order) {
-		int id = order.getId();
-		int time = order.getTime();
-		int number = order.getDish().getNumber();
-		int status = order.getStatus();
-		double price = order.getDish().getPrice();
-		String name = order.getName();
-		String dishName = order.getDish().getName();
-		String address = order.getAddress();
-		
-		double sumPrice = price * number;
-		if(sumPrice < 50) {
-			sumPrice += 6;
-		}
-		System.out.println(
-				id + "\t" + name + '\t' + dishName + " " + number + "份" + "\t" + time + '\t' + 
-				address +"\t" + sumPrice + "\t" + 
-				Utils.changNumber(status));
-	}
 
 	/**
-	 * 签收订单
+	 * 功能3：签收订单
 	 * 1.遍历订单列表，查看是否存在未签收的订单
 	 * 2.所有订单已签收，退出子程序
 	 * 3.输入订单号，签收订单
@@ -199,7 +148,7 @@ public class OrderModel {
 			System.out.println("目前订单已全部签收,不要重复签收");
 		} else {
 			int id = 0, exist = 0;
-			while((id = Utils.correctInput(id, "输入需要签收的订单号：")) != -1) {
+			while((id = Utils.correctInput(id, "输入需要签收的订单号：")) != EOF) {
 				exist = orderDao.findOrderById(id, listOrder);
 				switch(exist) {
 				case 0:
@@ -219,7 +168,7 @@ public class OrderModel {
 
 
 	/**
-	 * 删除订单
+	 * 功能4：删除订单
 	 * 1.查找是否存在给定订单号
 	 * 2.删除订单(从订单列表中移除)
 	 */
@@ -237,7 +186,7 @@ public class OrderModel {
 			System.out.println("无可删除订单");
 		} else {
 			int id = 0, exist = 0;
-			while((id = Utils.correctInput(id, "请输入你要删除的订单号：")) != -1) {
+			while((id = Utils.correctInput(id, "请输入你要删除的订单号：")) != EOF) {
 				exist = orderDao.deleteOrderById(id, listOrder);
 				switch(exist) {
 				case 0:
@@ -255,7 +204,7 @@ public class OrderModel {
 	
 
 	/**
-	 * 点赞
+	 * 功能5：点赞
 	 * 1.修改菜品点赞信息
 	 */
 	public void thunbsUp() {
@@ -263,7 +212,7 @@ public class OrderModel {
 		System.out.println("请选择你要点赞的菜品：");
 		viewDish();
 		int id = 0;
-		while((id = Utils.correctInput(id, "请输入菜品序号：")) != -1) {
+		while((id = Utils.correctInput(id, "请输入菜品序号：")) != EOF) {
 			if(id < 1 || id > 3) {
 				System.out.print("序号范围1-3");
 			} else {
@@ -331,6 +280,66 @@ public class OrderModel {
 		// 添加订单
 		listOrder.add(order1);
 		listOrder.add(order2);
+	}
+	
+	/**
+	 * 显示订单
+	 * 1.整齐排列算法
+	 */
+	private void viewOrder(Order order) {
+		
+		double price = order.getDish().getPrice();
+		int number = order.getDish().getNumber();
+		double sumPrice = Utils.sumPrice(number, price);
+		
+		System.out.println("---订单信息---\t");
+		System.out.println("订单号\t" + order.getId());
+		System.out.println("姓名\t" + order.getName());
+		System.out.println("菜品\t" + order.getDish().getName());
+		System.out.println("单价\t" + order.getDish().getPrice() + "元");
+		System.out.println("份数\tx" + order.getDish().getNumber());
+		System.out.println("总金额\t" + sumPrice);
+		System.out.println("送餐时间\t" + order.getTime());
+		System.out.println("送餐地址\t" + order.getAddress());
+		System.out.println("------------");
+	}
+
+	/**
+	 * 显示菜单
+	 * 1.遍历菜单列表
+	 */
+	private void viewDish() {
+		System.out.println("序号\t名称\t单价\t点赞数");
+		for(Dish dish : listDish) {
+			System.out.println(dish.getId() + "\t" + dish.getName() + "\t" 
+					+ dish.getPrice() + "\t" + dish.getThumbs());
+		}
+		
+	}
+
+	/**
+	 * 格式化输出订单信息
+	 * 1.整齐排列算法
+	 * @param order
+	 */
+	private void soutOrder(Order order) {
+		int id = order.getId();
+		int time = order.getTime();
+		int number = order.getDish().getNumber();
+		int status = order.getStatus();
+		double price = order.getDish().getPrice();
+		String name = order.getName();
+		String dishName = order.getDish().getName();
+		String address = order.getAddress();
+		
+		double sumPrice = price * number;
+		if(sumPrice < 50) {
+			sumPrice += 6;
+		}
+		System.out.println(
+				id + "\t" + name + '\t' + dishName + " " + number + "份" + "\t" + time + '\t' + 
+				address +"\t" + sumPrice + "\t" + 
+				Utils.changNumber(status));
 	}
 	
 }

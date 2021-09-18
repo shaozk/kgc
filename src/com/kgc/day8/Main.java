@@ -29,7 +29,6 @@ public class Main {
 				model.deleteOrder(); // 删除订单
 				break;
 			case 5:
-				// TODO
 				model.thunbsUp();	// 点赞
 				break;
 			case 6:
@@ -39,7 +38,7 @@ public class Main {
 				tips();		// 提示
 				break;
 			}
-		} while(funcNumber != -1);
+		} while(true);
 	}
 
 	/**
@@ -53,7 +52,7 @@ public class Main {
 	 * 初始化界面
 	 */
 	private static void initView() {
-		System.out.println("欢迎使用“吃货联盟订餐管理系统");
+		System.out.println("欢迎使用吃货联盟订餐管理系统");
 		System.out.println("*********************");
 		System.out.println("1.我要订单");
 		System.out.println("2.查看餐袋");
@@ -71,7 +70,4 @@ public class Main {
 		System.out.println("谢谢使用，再见！");
 		System.exit(0);
 	}
-	
-	
-
 }
